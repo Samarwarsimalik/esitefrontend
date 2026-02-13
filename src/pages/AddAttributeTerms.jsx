@@ -3,7 +3,7 @@ import axios from "axios";
 import Sidebar from "./sidebar/Sidebar"; // Assuming your Sidebar component path
 import { X, Edit2, Trash2 } from "lucide-react";
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 const slugify = (text) =>
   text.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");

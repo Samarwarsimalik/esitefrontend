@@ -13,7 +13,7 @@ export default function BrandsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/brands")
+    fetch("https://esitebackend.onrender.com/api/brands")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch brands");
         return res.json();
@@ -103,7 +103,7 @@ export default function BrandsPage() {
                   <div className="relative rounded-2xl overflow-hidden shadow-xl group">
                     {brand.image ? (
                       <img
-                        src={`http://localhost:5000${brand.image}`}
+                        src={`https://esitebackend.onrender.com${brand.image}`}
                         alt={brand.name}
                         className="w-full h-48 object-contain group-hover:scale-105 transition-transform duration-300"
                       />

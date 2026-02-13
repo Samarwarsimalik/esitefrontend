@@ -3,7 +3,7 @@ import axios from "axios";
 import { X, Plus, Upload, Palette, Edit2, Trash2 } from "lucide-react";
 import Sidebar from "./sidebar/Sidebar";
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 const COLORS = [
   "#000000",
@@ -227,7 +227,7 @@ export default function BrandManager() {
   }
 
   const getImageUrl = (img) =>
-    img?.startsWith("http") ? img : `http://localhost:5000${img}`;
+    img?.startsWith("http") ? img : `https://esitebackend.onrender.com${img}`;
 
   // Handle selecting an item from autocomplete
   const handleSelectParent = (parent) => {

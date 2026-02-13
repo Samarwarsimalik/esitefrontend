@@ -215,7 +215,7 @@ export default function Checkout() {
               <img
                 src={
                   item.featuredImage
-                    ? `http://localhost:5000${item.featuredImage}`
+                    ? `https://esitebackend.onrender.com${item.featuredImage}`
                     : ""
                 }
                 alt={item.title}

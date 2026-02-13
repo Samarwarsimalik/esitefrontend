@@ -105,7 +105,7 @@ export default function Cart() {
           return (
             <div key={item._id} className="flex gap-6 border p-4 rounded">
               <img
-                src={`http://localhost:5000${item.featuredImage}`}
+                src={`https://esitebackend.onrender.com${item.featuredImage}`}
                 alt={item.title}
                 className="w-32 h-32 object-cover rounded"
               />

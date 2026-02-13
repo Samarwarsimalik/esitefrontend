@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProductForm from "./AddProduct";
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 export default function ProductEdit() {
   const { id } = useParams();

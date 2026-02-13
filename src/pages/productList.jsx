@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "./sidebar/ClientSidebar";
 import { Edit, Trash2, Eye } from "lucide-react"; // Icons
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 export default function ProductsList() {
   const [products, setProducts] = useState([]);

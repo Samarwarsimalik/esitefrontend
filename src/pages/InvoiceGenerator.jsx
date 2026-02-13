@@ -189,7 +189,7 @@ const InvoiceDocument = ({ order }) => (
             <Text style={[styles.tableCell, styles.colNum]}>{i + 1}</Text>
             <View style={[styles.tableCell, styles.colImage]}>
               <Image
-                src={`http://localhost:5000${item.featuredImage}`}
+                src={`https://esitebackend.onrender.com${item.featuredImage}`}
                 
                 style={styles.image}
                 alt={item.title}

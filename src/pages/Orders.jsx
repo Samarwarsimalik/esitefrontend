@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "./sidebar/Sidebar";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://esitebackend.onrender.com/api";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);

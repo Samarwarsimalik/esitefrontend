@@ -9,7 +9,7 @@ export default function Navbar() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/auth/me", {
+      .get("https://esitebackend.onrender.com/api/auth/me", {
         withCredentials: true,
       })
       .then((res) => setUser(res.data))

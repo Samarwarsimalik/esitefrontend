@@ -4,7 +4,7 @@ import axios from "axios";
 import { Plus, X, Edit2, Trash2 } from "lucide-react";
 import Sidebar from "./sidebar/Sidebar";
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 const slugify = (text) =>
   text

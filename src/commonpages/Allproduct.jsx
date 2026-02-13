@@ -205,7 +205,7 @@ export default function Products() {
                     className="border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer bg-white"
                   >
                     <img
-                      src={`http://localhost:5000${p.featuredImage}`}
+                      src={`https://esitebackend.onrender.com${p.featuredImage}`}
                       alt={p.title}
                       className="h-48 sm:h-56 w-full object-cover"
                     />

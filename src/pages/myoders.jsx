@@ -3,8 +3,8 @@ import { XCircle } from "lucide-react";
 import UserSidebar from "./sidebar/UserSidebar";
 import InvoiceGenerator from "./InvoiceGenerator";
 
-const API = "http://localhost:5000/api";
-const BASE_URL = "http://localhost:5000";
+const API = "https://esitebackend.onrender.com/api";
+const BASE_URL = "https://esitebackend.onrender.com";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);

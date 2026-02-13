@@ -68,7 +68,7 @@ export default function CategoryProducts() {
               >
                 {p.featuredImage ? (
                   <img
-                    src={`http://localhost:5000${p.featuredImage}`}
+                    src={`https://esitebackend.onrender.com${p.featuredImage}`}
                     alt={p.title}
                     className="h-56 w-full object-cover"
                   />

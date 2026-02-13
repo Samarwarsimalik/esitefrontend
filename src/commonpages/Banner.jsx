@@ -12,7 +12,7 @@ export default function EcommerceBanner() {
     <div className="relative w-full h-[500px] sm:h-[400px] md:h-[500px] lg:h-[550px]">
       {/* Background image */}
       <img
-        src="http://localhost:5000/uploads/products/ban.png"
+        src="https://esitebackend.onrender.com/uploads/products/ban.png"
         alt="E-commerce Banner"
         className="w-full h-full object-cover brightness-90"
       />

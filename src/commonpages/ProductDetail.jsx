@@ -246,7 +246,7 @@ cutoffTime: isVariable
         {/* IMAGES */}
         <div>
           <img
-            src={`http://localhost:5000${mainImage}`}
+            src={`https://esitebackend.onrender.com${mainImage}`}
             className="w-full max-w-md rounded shadow"
             alt=""
           />
@@ -256,7 +256,7 @@ cutoffTime: isVariable
               {displayImages.map((img, i) => (
                 <img
                   key={i}
-                  src={`http://localhost:5000${img}`}
+                  src={`https://esitebackend.onrender.com${img}`}
                   className="w-20 h-20 object-cover border rounded"
                   alt=""
                 />

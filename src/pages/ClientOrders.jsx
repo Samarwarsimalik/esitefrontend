@@ -13,7 +13,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://esitebackend.onrender.com/api";
 
 const STATUS_STYLES = {
   processing: "bg-gray-300 text-black",

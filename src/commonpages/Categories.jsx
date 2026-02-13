@@ -39,7 +39,7 @@ export default function CategoryPage() {
                 {/* Category Image */}
                 {cat.image ? (
                   <img
-                    src={`http://localhost:5000${cat.image}`}
+                    src={`https://esitebackend.onrender.com${cat.image}`}
                     alt={cat.name}
                     className="h-52 w-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />

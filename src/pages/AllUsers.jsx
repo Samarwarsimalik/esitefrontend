@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./sidebar/Sidebar";
 import { Search, User, CheckSquare, Edit2, Trash2 } from "lucide-react";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://esitebackend.onrender.com/api";
 
 async function apiFetch(endpoint, options = {}) {
   const res = await fetch(API_BASE + endpoint, {
@@ -259,7 +259,7 @@ export default function AllUsers() {
                       <td className="border border-black p-2 text-center">
                         {user.profileImage ? (
                           <img
-                            src={`http://localhost:5000${user.profileImage}`}
+                            src={`https://esitebackend.onrender.com${user.profileImage}`}
                             alt={user.name}
                             className="w-12 h-12 object-cover mx-auto rounded"
                           />
@@ -340,7 +340,7 @@ export default function AllUsers() {
                       <td className="border border-black p-2 text-center">
                         {user.profileImage ? (
                           <img
-                            src={`http://localhost:5000${user.profileImage}`}
+                            src={`https://esitebackend.onrender.com${user.profileImage}`}
                             alt={user.name}
                             className="w-12 h-12 object-cover mx-auto rounded"
                           />

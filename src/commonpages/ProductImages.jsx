@@ -5,7 +5,7 @@ export default function ProductImages({ product, setProduct }) {
     <div className="md:w-1/2 flex flex-col items-center">
       {product.featuredImage ? (
         <img
-          src={`http://localhost:5000${product.featuredImage}`}
+          src={`https://esitebackend.onrender.com${product.featuredImage}`}
           alt={product.title || "Product Image"}
           className="w-full max-w-md rounded-lg shadow-lg object-cover"
           loading="lazy"
@@ -21,7 +21,7 @@ export default function ProductImages({ product, setProduct }) {
           {product.images.map((imgUrl, idx) => (
             <img
               key={idx}
-              src={`http://localhost:5000${imgUrl}`}
+              src={`https://esitebackend.onrender.com${imgUrl}`}
               alt={`${product.title} image ${idx + 1}`}
               className={`w-24 h-24 rounded-md object-cover flex-shrink-0 cursor-pointer border ${
                 product.featuredImage === imgUrl ? "border-blue-500" : "border-gray-300"

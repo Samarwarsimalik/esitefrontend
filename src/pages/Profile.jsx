@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 // 🔒 Aadhar mask helper (XXXX-XXXX-1234)
 const maskAadhar = (aadhar = "") => {
@@ -58,7 +58,7 @@ export default function Profile() {
         });
 
         if (data.profileImage) {
-          setPreview(`http://localhost:5000${data.profileImage}`);
+          setPreview(`https://esitebackend.onrender.com${data.profileImage}`);
         }
       } catch (err) {
         setError(err.message);

@@ -12,7 +12,7 @@ export default function BrandProductsPage() {
     setLoading(true);
     setError(null);
 
-    fetch(`http://localhost:5000/api/products/public/by-brand?brand=${slug}`)
+    fetch(`https://esitebackend.onrender.com/api/products/public/by-brand?brand=${slug}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch products");
         return res.json();
@@ -49,7 +49,7 @@ export default function BrandProductsPage() {
               >
                 {product.featuredImage ? (
                   <img
-                    src={`http://localhost:5000${product.featuredImage}`}
+                    src={`https://esitebackend.onrender.com${product.featuredImage}`}
                     alt={product.title}
                     className="h-48 w-full object-cover"
                   />

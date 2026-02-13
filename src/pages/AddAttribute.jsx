@@ -9,7 +9,7 @@ import {
   Search as SearchIcon,
 } from "lucide-react";
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 /* ---------- SLUGIFY ---------- */
 const slugify = (text = "") =>

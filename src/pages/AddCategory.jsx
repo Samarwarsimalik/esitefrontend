@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Sidebar from "./sidebar/Sidebar";
 
-const API = "http://localhost:5000/api";
+const API = "https://esitebackend.onrender.com/api";
 
 const COLORS = [
   "#000000",
@@ -26,7 +26,7 @@ const COLORS = [
 ];
 
 const getImageUrl = (img) =>
-  img?.startsWith("http") ? img : `http://localhost:5000${img}`;
+  img?.startsWith("http") ? img : `https://esitebackend.onrender.com${img}`;
 
 export default function CategoryManager() {
   const [categories, setCategories] = useState([]);

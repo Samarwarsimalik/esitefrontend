@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "https://esitebackend.onrender.com/api";
 
 const COLORS = ["#6366F1", "#10B981", "#FBBF24", "#EF4444"]; // Indigo, Green, Yellow, Red
 
