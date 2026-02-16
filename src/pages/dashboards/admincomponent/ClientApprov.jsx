@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Sidebar from "../../sidebar/Sidebar";
-
+const API = "https://esitebackend.onrender.com/api";
 const AdminClientApproval = () => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,9 +14,10 @@ const AdminClientApproval = () => {
     setError("");
 
     try {
-      const response = await fetch("/api/admin/clients", {
-        credentials: "include",
-      });
+     
+      const response = await fetch(`${API}/admin/clients`, {
+  credentials: "include",
+});
 
       if (!response.ok) {
         throw new Error("Failed to load clients");
@@ -35,53 +36,53 @@ const AdminClientApproval = () => {
     fetchClients();
   }, [fetchClients]);
 
-  const handleApprove = async (id) => {
-    try {
-      const response = await fetch(
-        `/api/admin/approve-client/${id}`,
-        {
-          method: "PUT",
-          credentials: "include",
-        }
-      );
+ const handleApprove = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/admin/approve-client/${id}`,
+      {
+        method: "PUT",
+        credentials: "include",
+      }
+    );
 
-      if (!response.ok) throw new Error("Approve failed");
+    if (!response.ok) throw new Error("Approve failed");
 
-      setClients((prev) =>
-        prev.map((client) =>
-          client._id === id
-            ? { ...client, isApproved: true }
-            : client
-        )
-      );
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+    setClients((prev) =>
+      prev.map((client) =>
+        client._id === id
+          ? { ...client, isApproved: true }
+          : client
+      )
+    );
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
-  const handleCancel = async (id) => {
-    try {
-      const response = await fetch(
-        `/api/admin/cancel-approval/${id}`,
-        {
-          method: "PUT",
-          credentials: "include",
-        }
-      );
+ const handleCancel = async (id) => {
+  try {
+    const response = await fetch(
+      `${API}/admin/cancel-approval/${id}`,
+      {
+        method: "PUT",
+        credentials: "include",
+      }
+    );
 
-      if (!response.ok) throw new Error("Cancel failed");
+    if (!response.ok) throw new Error("Cancel failed");
 
-      setClients((prev) =>
-        prev.map((client) =>
-          client._id === id
-            ? { ...client, isApproved: false }
-            : client
-        )
-      );
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+    setClients((prev) =>
+      prev.map((client) =>
+        client._id === id
+          ? { ...client, isApproved: false }
+          : client
+      )
+    );
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
   // Filter clients based on search term and status
   const filteredClients = clients.filter((client) => {

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 
+const API = "https://esitebackend.onrender.com/api";
+const BASE_URL = "https://esitebackend.onrender.com";
+
 const getProductPrice = (product) => {
   if (product.productType === "variable" && product.variations?.length) {
     const prices = product.variations.map((v) =>
@@ -14,20 +17,33 @@ const getProductPrice = (product) => {
 
 export default function ProductSlider() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/products/public")
-      .then((res) => res.json())
-      .then((data) => setProducts(data || []));
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${API}/products/public`, {
+          credentials: "include",
+        });
 
-  /* ================= ADD TO CART ================= */
+        if (!res.ok) throw new Error("Failed to fetch products");
+
+        const data = await res.json();
+        setProducts(data || []);
+      } catch (err) {
+        console.error("Product fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleAddToCart = (product) => {
     const isVariable = product.productType === "variable";
 
-    // Slider me variation select nahi hoti
     if (isVariable) {
       alert("Please select this product from detail page");
       navigate(`/product/${product.slug}`);
@@ -70,8 +86,6 @@ export default function ProductSlider() {
     navigate("/cart");
   };
 
-  /* ================= SLIDER SETTINGS ================= */
-
   const settings = {
     dots: false,
     infinite: products.length > 5,
@@ -85,6 +99,22 @@ export default function ProductSlider() {
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
   };
+
+  if (loading) {
+    return (
+      <p className="text-center text-gray-500 py-10">
+        Loading products...
+      </p>
+    );
+  }
+
+  if (!products.length) {
+    return (
+      <p className="text-center text-gray-500 py-10">
+        No products available.
+      </p>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
@@ -100,7 +130,11 @@ export default function ProductSlider() {
               className="border rounded-2xl overflow-hidden shadow hover:shadow-lg transition-all duration-300 flex flex-col cursor-pointer bg-white"
             >
               <img
-                src={`https://esitebackend.onrender.com${p.featuredImage}`}
+                src={
+                  p.featuredImage
+                    ? `${BASE_URL}${p.featuredImage}`
+                    : "/placeholder.png"
+                }
                 alt={p.title}
                 className="h-48 sm:h-56 w-full object-cover"
               />

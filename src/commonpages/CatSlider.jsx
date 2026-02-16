@@ -2,15 +2,35 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 
+const API = "https://esitebackend.onrender.com/api";
+const BASE_URL = "https://esitebackend.onrender.com";
+
 export default function CategorySlider() {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/categories")
-      .then((res) => res.json())
-      .then((data) => setCategories(data || []))
-      .catch((err) => console.error("Failed to fetch categories:", err));
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API}/categories`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await res.json();
+        setCategories(data || []);
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   const settings = {
@@ -20,19 +40,28 @@ export default function CategorySlider() {
     slidesToShow: 5,
     slidesToScroll: 1,
     responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 5} },
+      { breakpoint: 1280, settings: { slidesToShow: 5 } },
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
   };
 
-  if (!categories.length)
+  if (loading) {
+    return (
+      <p className="text-center text-gray-500 text-lg py-10">
+        Loading categories...
+      </p>
+    );
+  }
+
+  if (!categories.length) {
     return (
       <p className="text-center text-gray-500 text-lg py-10">
         No categories available.
       </p>
     );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
@@ -47,10 +76,9 @@ export default function CategorySlider() {
               onClick={() => navigate(`/category/${cat.slug}`)}
               className="relative cursor-pointer overflow-hidden rounded-3xl shadow-lg group hover:shadow-2xl transition-shadow duration-300"
             >
-              {/* Category Image */}
               {cat.image ? (
                 <img
-                  src={`https://esitebackend.onrender.com${cat.image}`}
+                  src={`${BASE_URL}${cat.image}`}
                   alt={cat.name}
                   className="h-52 w-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -60,7 +88,6 @@ export default function CategorySlider() {
                 </div>
               )}
 
-              {/* Overlay with Category Name */}
               <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4 text-center">
                 <h3 className="text-white text-lg sm:text-xl font-semibold capitalize">
                   {cat.name}
