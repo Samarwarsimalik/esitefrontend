@@ -74,7 +74,7 @@ export default function Checkout() {
     setLoading(true);
     try {
       await axios.post(
-        "${BACKEND_URL}/api/orders/cod",
+        `${BACKEND_URL}/api/orders/cod`,
         {
            cartItems: cart.map((item) => ({
                   _id: item._id,
@@ -122,7 +122,7 @@ export default function Checkout() {
     setLoading(true);
     try {
       const { data: order } = await axios.post(
-        "${BACKEND_URL}/api/payment/create-order",
+        `${BACKEND_URL}/api/payment/create-order`,
         { amount: totalAmount },
         { withCredentials: true }
       );
@@ -136,7 +136,7 @@ export default function Checkout() {
         handler: async (response) => {
           try {
             await axios.post(
-              "${BACKEND_URL}/api/payment/verify-payment",
+              `${BACKEND_URL}/api/payment/verify-payment`,
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
