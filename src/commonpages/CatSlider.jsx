@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const API = "https://esitebackend.onrender.com/api";
 const BASE_URL = "https://esitebackend.onrender.com";
@@ -13,14 +15,8 @@ export default function CategorySlider() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${API}/categories`, {
-          credentials: "include",
-        });
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-
+        const res = await fetch(`${API}/categories`, { credentials: "include" });
+        if (!res.ok) throw new Error("Failed to fetch categories");
         const data = await res.json();
         setCategories(data || []);
       } catch (err) {
@@ -29,7 +25,6 @@ export default function CategorySlider() {
         setLoading(false);
       }
     };
-
     fetchCategories();
   }, []);
 
@@ -37,34 +32,24 @@ export default function CategorySlider() {
     dots: false,
     infinite: categories.length > 5,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: Math.min(5, categories.length),
     slidesToScroll: 1,
     responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 5 } },
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
+      { breakpoint: 1280, settings: { slidesToShow: Math.min(5, categories.length) } },
+      { breakpoint: 1024, settings: { slidesToShow: Math.min(3, categories.length) } },
+      { breakpoint: 768, settings: { slidesToShow: Math.min(2, categories.length) } },
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
   };
 
-  if (loading) {
-    return (
-      <p className="text-center text-gray-500 text-lg py-10">
-        Loading categories...
-      </p>
-    );
-  }
+  if (loading)
+    return <p className="text-center text-gray-500 text-lg py-10">Loading categories...</p>;
 
-  if (!categories.length) {
-    return (
-      <p className="text-center text-gray-500 text-lg py-10">
-        No categories available.
-      </p>
-    );
-  }
+  if (!categories.length)
+    return <p className="text-center text-gray-500 text-lg py-10">No categories available.</p>;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16">
+    <div className="w-full mx-auto px-4 sm:px-6 py-16">
       <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-12 text-gray-900">
         Categories
       </h1>
@@ -80,10 +65,10 @@ export default function CategorySlider() {
                 <img
                   src={`${BASE_URL}${cat.image}`}
                   alt={cat.name}
-                  className="h-52 w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-auto max-h-60 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               ) : (
-                <div className="h-52 w-full bg-gray-200 flex items-center justify-center text-gray-400 font-semibold text-lg">
+                <div className="w-full h-52 bg-gray-200 flex items-center justify-center text-gray-400 font-semibold text-lg">
                   No Image
                 </div>
               )}
