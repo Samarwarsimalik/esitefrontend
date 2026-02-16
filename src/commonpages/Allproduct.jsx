@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 
-/* ===== ENV ===== */
-const API_URL = import.meta.env.VITE_API_URL;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+/* ================= API BASE ================= */
+const API_BASE =
+  process.env.REACT_APP_API_URL ||
+  "https://esitebackend.onrender.com";
 
 /* ===== PRICE HELPER ===== */
 const getProductPrice = (product) => {
@@ -25,10 +26,11 @@ export default function Products() {
   const location = useLocation();
 
   const searchQuery =
-    new URLSearchParams(location.search).get("q")?.toLowerCase() || "";
+    new URLSearchParams(location.search).get("q") || "";
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
@@ -36,32 +38,26 @@ export default function Products() {
   const [maxPrice, setMaxPrice] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
-  /* ================= FETCH ================= */
+  /* ================= FETCH PRODUCTS ================= */
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${API_URL}/products/public`);
+        const res = await fetch(`${API_BASE}/api/products/public`);
         const data = await res.json();
 
-        console.log("API RESPONSE:", data);
-
-        // 🔥 Universal extractor
-        const list =
-          Array.isArray(data)
-            ? data
-            : Array.isArray(data.products)
-            ? data.products
-            : [];
+        const list = Array.isArray(data) ? data : data.products || [];
 
         setProducts(list);
 
-        const prices = list.map(getProductPrice);
-        const max = Math.max(...prices, 0);
-
-        setMaxPrice(max);
-        setPriceRange([0, max]);
+        if (list.length > 0) {
+          const prices = list.map(getProductPrice);
+          const max = Math.max(...prices);
+          setMaxPrice(max);
+          setPriceRange([0, max]);
+        }
       } catch (err) {
-        console.error("Fetch error:", err);
+        console.error("Product fetch error:", err);
+        setError("Failed to load products.");
       } finally {
         setLoading(false);
       }
@@ -70,7 +66,8 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  /* ================= FILTER OPTIONS ================= */
+  /* ================= FILTER DATA ================= */
+
   const categories = useMemo(
     () =>
       [...new Set(products.map((p) => p.category?.name).filter(Boolean))],
@@ -84,26 +81,21 @@ export default function Products() {
   );
 
   /* ================= FILTER LOGIC ================= */
+
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const price = getProductPrice(p);
 
-      const matchCategory =
-        !selectedCategories.length ||
-        selectedCategories.includes(p.category?.name);
-
-      const matchBrand =
-        !selectedBrands.length ||
-        selectedBrands.includes(p.brand?.name);
-
-      const matchPrice =
-        price >= priceRange[0] && price <= priceRange[1];
-
-      const matchSearch =
-        !searchQuery ||
-        p.title?.toLowerCase().includes(searchQuery);
-
-      return matchCategory && matchBrand && matchPrice && matchSearch;
+      return (
+        (!selectedCategories.length ||
+          selectedCategories.includes(p.category?.name)) &&
+        (!selectedBrands.length ||
+          selectedBrands.includes(p.brand?.name)) &&
+        price >= priceRange[0] &&
+        price <= priceRange[1] &&
+        (!searchQuery ||
+          p.title?.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
     });
   }, [
     products,
@@ -142,7 +134,7 @@ export default function Products() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
-          {/* FILTER SIDEBAR */}
+          {/* ================= SIDEBAR ================= */}
           <aside
             className={`
               ${showFilters ? "block" : "hidden"}
@@ -150,7 +142,7 @@ export default function Products() {
               border rounded-2xl p-6 space-y-8 h-fit bg-white
             `}
           >
-            {/* Category */}
+            {/* CATEGORY */}
             <div>
               <h3 className="font-semibold mb-3">Category</h3>
               <div className="space-y-2 max-h-40 overflow-auto">
@@ -169,7 +161,7 @@ export default function Products() {
               </div>
             </div>
 
-            {/* Brand */}
+            {/* BRAND */}
             <div>
               <h3 className="font-semibold mb-3">Brand</h3>
               <div className="space-y-2 max-h-40 overflow-auto">
@@ -188,24 +180,26 @@ export default function Products() {
               </div>
             </div>
 
-            {/* Price */}
-            <div>
-              <h3 className="font-semibold mb-3">Price</h3>
-              <input
-                type="range"
-                min={0}
-                max={maxPrice}
-                value={priceRange[1]}
-                onChange={(e) =>
-                  setPriceRange([0, Number(e.target.value)])
-                }
-                className="w-full accent-black"
-              />
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>₹0</span>
-                <span>₹{priceRange[1]}</span>
+            {/* PRICE */}
+            {maxPrice > 0 && (
+              <div>
+                <h3 className="font-semibold mb-3">Price</h3>
+                <input
+                  type="range"
+                  min={0}
+                  max={maxPrice}
+                  value={priceRange[1]}
+                  onChange={(e) =>
+                    setPriceRange([0, Number(e.target.value)])
+                  }
+                  className="w-full accent-black"
+                />
+                <div className="flex justify-between text-sm text-gray-500">
+                  <span>₹0</span>
+                  <span>₹{priceRange[1]}</span>
+                </div>
               </div>
-            </div>
+            )}
 
             <button
               onClick={() => {
@@ -219,12 +213,12 @@ export default function Products() {
             </button>
           </aside>
 
-          {/* PRODUCTS GRID */}
+          {/* ================= PRODUCTS ================= */}
           <div className="lg:col-span-3">
             {loading ? (
-              <p>Loading products...</p>
-            ) : products.length === 0 ? (
-              <p>No products in database.</p>
+              <p>Loading...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
             ) : filteredProducts.length === 0 ? (
               <p>No products found.</p>
             ) : (
@@ -238,8 +232,8 @@ export default function Products() {
                     <img
                       src={
                         p.featuredImage
-                          ? `${BASE_URL}${p.featuredImage}`
-                          : "/placeholder.png"
+                          ? `${API_BASE}${p.featuredImage}`
+                          : "https://via.placeholder.com/400x300"
                       }
                       alt={p.title}
                       className="h-48 sm:h-56 w-full object-cover"
@@ -263,7 +257,6 @@ export default function Products() {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </>
