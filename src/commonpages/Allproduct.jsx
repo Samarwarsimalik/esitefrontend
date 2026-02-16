@@ -8,20 +8,24 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 /* ===== PRICE HELPER ===== */
 const getProductPrice = (product) => {
+  if (!product) return 0;
+
   if (product.productType === "variable" && product.variations?.length) {
     const prices = product.variations.map((v) =>
       v.salePrice > 0 ? v.salePrice : v.price
     );
     return Math.min(...prices);
   }
+
   return product.salePrice > 0 ? product.salePrice : product.price;
 };
 
 export default function Products() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const searchQuery =
-    new URLSearchParams(location.search).get("q") || "";
+    new URLSearchParams(location.search).get("q")?.toLowerCase() || "";
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,14 +36,23 @@ export default function Products() {
   const [maxPrice, setMaxPrice] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
 
-  /* ===== FETCH PRODUCTS ===== */
+  /* ================= FETCH ================= */
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch(`${API_URL}/products/public`);
         const data = await res.json();
 
-        const list = Array.isArray(data) ? data : [];
+        console.log("API RESPONSE:", data);
+
+        // 🔥 Universal extractor
+        const list =
+          Array.isArray(data)
+            ? data
+            : Array.isArray(data.products)
+            ? data.products
+            : [];
+
         setProducts(list);
 
         const prices = list.map(getProductPrice);
@@ -47,8 +60,8 @@ export default function Products() {
 
         setMaxPrice(max);
         setPriceRange([0, max]);
-      } catch (error) {
-        console.error("Product fetch error:", error);
+      } catch (err) {
+        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -57,7 +70,7 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  /* ===== FILTER OPTIONS ===== */
+  /* ================= FILTER OPTIONS ================= */
   const categories = useMemo(
     () =>
       [...new Set(products.map((p) => p.category?.name).filter(Boolean))],
@@ -70,21 +83,27 @@ export default function Products() {
     [products]
   );
 
-  /* ===== FILTER LOGIC ===== */
+  /* ================= FILTER LOGIC ================= */
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const price = getProductPrice(p);
 
-      return (
-        (!selectedCategories.length ||
-          selectedCategories.includes(p.category?.name)) &&
-        (!selectedBrands.length ||
-          selectedBrands.includes(p.brand?.name)) &&
-        price >= priceRange[0] &&
-        price <= priceRange[1] &&
-        (!searchQuery ||
-          p.title.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
+      const matchCategory =
+        !selectedCategories.length ||
+        selectedCategories.includes(p.category?.name);
+
+      const matchBrand =
+        !selectedBrands.length ||
+        selectedBrands.includes(p.brand?.name);
+
+      const matchPrice =
+        price >= priceRange[0] && price <= priceRange[1];
+
+      const matchSearch =
+        !searchQuery ||
+        p.title?.toLowerCase().includes(searchQuery);
+
+      return matchCategory && matchBrand && matchPrice && matchSearch;
     });
   }, [
     products,
@@ -107,7 +126,7 @@ export default function Products() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        {/* ===== HEADER ===== */}
+        {/* HEADER */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold">
             Shop Products
@@ -123,11 +142,11 @@ export default function Products() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
-          {/* ===== FILTER SIDEBAR ===== */}
+          {/* FILTER SIDEBAR */}
           <aside
             className={`
-              ${showFilters ? "block" : "hidden"} 
-              lg:block 
+              ${showFilters ? "block" : "hidden"}
+              lg:block
               border rounded-2xl p-6 space-y-8 h-fit bg-white
             `}
           >
@@ -200,10 +219,12 @@ export default function Products() {
             </button>
           </aside>
 
-          {/* ===== PRODUCTS GRID ===== */}
+          {/* PRODUCTS GRID */}
           <div className="lg:col-span-3">
             {loading ? (
-              <p>Loading...</p>
+              <p>Loading products...</p>
+            ) : products.length === 0 ? (
+              <p>No products in database.</p>
             ) : filteredProducts.length === 0 ? (
               <p>No products found.</p>
             ) : (
