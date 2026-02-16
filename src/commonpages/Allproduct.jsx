@@ -2,6 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 
+/* ===== ENV ===== */
+const API_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 /* ===== PRICE HELPER ===== */
 const getProductPrice = (product) => {
   if (product.productType === "variable" && product.variations?.length) {
@@ -26,15 +30,16 @@ export default function Products() {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 0]);
   const [maxPrice, setMaxPrice] = useState(0);
-
   const [showFilters, setShowFilters] = useState(false);
 
-  /* ===== FETCH ===== */
+  /* ===== FETCH PRODUCTS ===== */
   useEffect(() => {
-    fetch("/api/products/public")
-      .then((res) => res.json())
-      .then((data) => {
-        const list = data || [];
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${API_URL}/products/public`);
+        const data = await res.json();
+
+        const list = Array.isArray(data) ? data : [];
         setProducts(list);
 
         const prices = list.map(getProductPrice);
@@ -42,11 +47,17 @@ export default function Products() {
 
         setMaxPrice(max);
         setPriceRange([0, max]);
-      })
-      .finally(() => setLoading(false));
+      } catch (error) {
+        console.error("Product fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  /* ===== FILTER DATA ===== */
+  /* ===== FILTER OPTIONS ===== */
   const categories = useMemo(
     () =>
       [...new Set(products.map((p) => p.category?.name).filter(Boolean))],
@@ -96,13 +107,12 @@ export default function Products() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        {/* Header */}
+        {/* ===== HEADER ===== */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold">
             Shop Products
           </h1>
 
-          {/* Mobile Filter Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="lg:hidden border px-4 py-2 rounded-xl text-sm"
@@ -112,7 +122,7 @@ export default function Products() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          
+
           {/* ===== FILTER SIDEBAR ===== */}
           <aside
             className={`
@@ -205,17 +215,24 @@ export default function Products() {
                     className="border rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer bg-white"
                   >
                     <img
-                      src={`https://esitebackend.onrender.com${p.featuredImage}`}
+                      src={
+                        p.featuredImage
+                          ? `${BASE_URL}${p.featuredImage}`
+                          : "/placeholder.png"
+                      }
                       alt={p.title}
                       className="h-48 sm:h-56 w-full object-cover"
                     />
+
                     <div className="p-4">
                       <h3 className="font-semibold line-clamp-2">
                         {p.title}
                       </h3>
+
                       <p className="text-sm text-gray-500">
                         {p.brand?.name}
                       </p>
+
                       <p className="text-lg font-bold mt-1">
                         ₹{getProductPrice(p)}
                       </p>
@@ -225,6 +242,7 @@ export default function Products() {
               </div>
             )}
           </div>
+
         </div>
       </div>
     </>
