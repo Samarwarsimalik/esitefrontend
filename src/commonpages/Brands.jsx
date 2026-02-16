@@ -12,6 +12,7 @@ export default function BrandsPage() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Fetch brands
   useEffect(() => {
     fetch("https://esitebackend.onrender.com/api/brands")
       .then((res) => {
@@ -21,8 +22,7 @@ export default function BrandsPage() {
       .then((data) => {
         setBrands(data || []);
         setLoading(false);
-        // Trigger resize so slider recalculates width
-        window.dispatchEvent(new Event("resize"));
+        window.dispatchEvent(new Event("resize")); // Force slick to recalc width
       })
       .catch((err) => {
         console.error("Error fetching brands:", err);
@@ -43,10 +43,12 @@ export default function BrandsPage() {
       <div className="text-center mt-20 text-xl text-red-500">Error: {error}</div>
     );
 
-  // Custom arrows
+  // Custom arrows (hidden on mobile)
   const NextArrow = ({ onClick }) => (
     <div
-      className="absolute top-1/2 right-2 sm:right-3 z-10 w-10 h-10 bg-black text-white flex items-center justify-center rounded-full cursor-pointer hover:bg-white hover:text-black transition-colors duration-300"
+      className="hidden sm:flex absolute top-1/2 right-2 z-10 w-10 h-10 bg-black text-white 
+                 items-center justify-center rounded-full cursor-pointer 
+                 hover:bg-white hover:text-black transition-colors duration-300"
       style={{ transform: "translateY(-50%)" }}
       onClick={onClick}
     >
@@ -56,7 +58,9 @@ export default function BrandsPage() {
 
   const PrevArrow = ({ onClick }) => (
     <div
-      className="absolute top-1/2 left-2 sm:left-3 z-10 w-10 h-10 bg-black text-white flex items-center justify-center rounded-full cursor-pointer hover:bg-white hover:text-black transition-colors duration-300"
+      className="hidden sm:flex absolute top-1/2 left-2 z-10 w-10 h-10 bg-black text-white 
+                 items-center justify-center rounded-full cursor-pointer 
+                 hover:bg-white hover:text-black transition-colors duration-300"
       style={{ transform: "translateY(-50%)" }}
       onClick={onClick}
     >
@@ -64,6 +68,7 @@ export default function BrandsPage() {
     </div>
   );
 
+  // Slick slider settings
   const sliderSettings = {
     dots: false,
     infinite: true,
@@ -102,10 +107,10 @@ export default function BrandsPage() {
                     <img
                       src={`https://esitebackend.onrender.com${brand.image}`}
                       alt={brand.name}
-                      className="w-full h-48 sm:h-56 md:h-60 lg:h-64 object-contain group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-40 sm:h-48 md:h-56 lg:h-64 object-contain group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="w-full h-48 sm:h-56 md:h-60 lg:h-64 bg-gray-200 flex items-center justify-center text-gray-400 font-semibold text-lg rounded-2xl">
+                    <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64 bg-gray-200 flex items-center justify-center text-gray-400 font-semibold text-lg rounded-2xl">
                       No Image
                     </div>
                   )}
