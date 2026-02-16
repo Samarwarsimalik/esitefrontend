@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
+const API = "https://esitebackend.onrender.com/api";
+const BASE_URL = "https://esitebackend.onrender.com";
+
 /* ===== PRICE HELPER ===== */
 const getProductPrice = (product) => {
   if (product.productType === "variable" && product.variations?.length) {
@@ -14,33 +17,38 @@ const getProductPrice = (product) => {
 };
 
 export default function CategoryProducts() {
-  const { slug } = useParams(); // category slug from URL
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    console.log("Fetching products for category slug:", slug);
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError("");
 
-    setLoading(true);
-    setError("");
+      try {
+        const res = await fetch(
+          `${API}/products/public?category=${slug}`,
+          { credentials: "include" }
+        );
 
-    fetch(`/api/products/public?category=${slug}`)
-      .then((res) => {
-        console.log("Fetch response status:", res.status);
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Products received:", data);
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+
+        const data = await res.json();
         setProducts(data || []);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Failed to fetch products:", err);
         setError("Failed to load products. Please try again later.");
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, [slug]);
 
   return (
@@ -48,7 +56,9 @@ export default function CategoryProducts() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-6 py-10">
-        <h1 className="text-3xl font-bold mb-8 capitalize">{slug}</h1>
+        <h1 className="text-3xl font-bold mb-8 capitalize">
+          {slug}
+        </h1>
 
         {loading ? (
           <p className="text-gray-500">Loading products...</p>
@@ -68,7 +78,7 @@ export default function CategoryProducts() {
               >
                 {p.featuredImage ? (
                   <img
-                    src={`https://esitebackend.onrender.com${p.featuredImage}`}
+                    src={`${BASE_URL}${p.featuredImage}`}
                     alt={p.title}
                     className="h-56 w-full object-cover"
                   />
@@ -79,9 +89,15 @@ export default function CategoryProducts() {
                 )}
 
                 <div className="p-4">
-                  <h3 className="font-semibold line-clamp-2">{p.title}</h3>
-                  <p className="text-sm text-gray-500">{p.brand?.name}</p>
-                  <p className="text-lg font-bold">₹{getProductPrice(p)}</p>
+                  <h3 className="font-semibold line-clamp-2">
+                    {p.title}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {p.brand?.name}
+                  </p>
+                  <p className="text-lg font-bold">
+                    ₹{getProductPrice(p)}
+                  </p>
                 </div>
               </div>
             ))}
