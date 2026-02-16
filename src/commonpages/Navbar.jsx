@@ -32,7 +32,7 @@ export default function Navbar() {
 
       <div className="flex gap-6 items-center">
         <Link to="/">Home</Link>
-        <Link to="/shop">Shop</Link>
+        <Link to="/products">Shop</Link>
         <Link to="/categories">Categories</Link>
 
 
