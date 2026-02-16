@@ -92,7 +92,7 @@ element={<ProtectedRoute role="admin"><ClientApprov/></ProtectedRoute>}
  <Route path="/admin/categories" element={<ProtectedRoute roles={["admin", "client"]}><AddCategory /></ProtectedRoute>} />
  <Route path="/admin/tags" element={<ProtectedRoute roles={["admin", "client"]}> <AddTag /></ProtectedRoute>}/>
 <Route path="/admin/brands" element={<ProtectedRoute roles={["admin", "client"]}><AddBrands/></ProtectedRoute>} />
-<Route path="/shop" element={<Allproduct/>}/>
+<Route path="/products" element={<Allproduct/>}/>
 <Route path="/product/:slug" element={<ProductDetail />} />
 <Route path="admin/products" element={<ProtectedRoute role="admin" ><AllProductList/> </ProtectedRoute>}/>
 <Route path="/client/orders" element={<ProtectedRoute roles={["admin", "client"]}><ClientOrders/></ProtectedRoute>} />
